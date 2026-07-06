@@ -36,13 +36,14 @@ This repo holds **project-specific** Oracle rules. The official Oracle `db/` ski
 
 | Skill | What it covers |
 |-------|----------------|
-| **`oracle-dev-db`** (this repo) | Naming, keys, audit columns, lookup tables, idempotent install scripts |
+| **`oracle-dev-db`** (this repo) | Naming, keys, audit columns, lookup tables, idempotent install scripts, project directory scaffolding |
 | **`db`** ([oracle/skills](https://github.com/oracle/skills)) | Generic Oracle: tuning, PL/SQL patterns, SQLcl, migrations, security |
 
 ### When to use which skill
 
 | Task | Use |
 |------|-----|
+| Scaffold a new application `database/` folder tree | `oracle-dev-db` → `devops/project-directory-setup.md` |
 | Create a table, view, index, or constraint | `oracle-dev-db` |
 | Write a MERGE seed script or idempotent install script | `oracle-dev-db` |
 | Decide naming, PK type, audit columns, status lookups | `oracle-dev-db` |
@@ -53,6 +54,7 @@ This repo holds **project-specific** Oracle rules. The official Oracle `db/` ski
 ### Agent workflow for schema work
 
 ```text
+0. New project? → oracle-dev-db/devops/project-directory-setup.md (copy templates/project-database/)
 1. Read oracle-schema-prefix.md in the APPLICATION repo (not this skills repo)
 2. Read oracle-dev-db/design/schema-standards.md
 3. Write DDL following those rules
@@ -73,9 +75,11 @@ cobb-dev-agent-skills/
     │   ├── project-prefix.md             ← how to find or ask for the app prefix
     │   └── schema-standards.md           ← tables, columns, keys, indexes, types
     ├── devops/
-    │   └── idempotent-ddl-scripts.md     ← install.sql, MERGE seeds, table-exists blocks
+    │   ├── idempotent-ddl-scripts.md     ← MERGE seeds, table-exists blocks
+    │   └── project-directory-setup.md    ← scaffold application database/ tree
     └── templates/
-        └── oracle-schema-prefix.md       ← copy into each application repo
+        ├── oracle-schema-prefix.md       ← copy into each application repo
+        └── project-database/             ← starter folders, READMEs, install scripts
 ```
 
 ---
@@ -87,9 +91,9 @@ cobb-dev-agent-skills/
 npx skills add xamdxlonewolf/cobb-dev-agent-skills/oracle-dev-db
 npx skills add oracle/skills/db
 
-# 2. In your application repo, create the project config
-cp path/to/oracle-dev-db/templates/oracle-schema-prefix.md ./oracle-schema-prefix.md
-# Edit: set object prefix, schema owner, runtime users, status codes
+# 2. In your application repo, ask the agent to "setup directory" (or copy manually):
+#    - templates/project-database/  → database/, apex/
+#    - templates/oracle-schema-prefix.md → oracle-schema-prefix.md (fill in prefix, users)
 
 # 3. Create SQL scripts under database/ following oracle-dev-db standards
 ```
@@ -98,14 +102,31 @@ Typical application repo layout:
 
 ```text
 my-app/
-├── oracle-schema-prefix.md       ← project config (required)
-├── database/
-│   ├── install.sql
-│   ├── tables/
-│   ├── indexes/
-│   ├── views/
-│   └── seeds/
-└── apex/                         ← NEVER modify (APEX export)
+├── oracle-schema-prefix.md
+├── apex/                                 ← APEX export (agents do not edit)
+└── database/
+    ├── README.md
+    ├── install/
+    │   ├── install.sql
+    │   ├── install-dev.sql
+    │   └── rollback.sql
+    ├── tables/
+    ├── indexes/
+    ├── constraints/
+    ├── sequences/
+    ├── views/
+    ├── mviews/
+    ├── types/
+    ├── packages/
+    │   ├── spec/                         ← .pks files
+    │   └── body/                         ← .pkb files
+    ├── procedures/
+    ├── functions/
+    ├── triggers/
+    ├── seeds/                            ← seed_*.sql MERGE scripts
+    ├── grants/
+    ├── synonyms/
+    └── data/                             ← one-off loads (not in default install)
 ```
 
 ---
@@ -125,7 +146,8 @@ my-app/
 | Timestamps | `TIMESTAMP` (default `SYSTIMESTAMP` on `created`) |
 | FK indexes | Must create — Oracle does not auto-index child FK columns |
 | Tablespaces | Omit from DDL |
-| Migrations | Hand-run scripts; MERGE for seeds; PL/SQL exists-check for tables |
+| Migrations | Hand-run scripts; MERGE for seeds (`seed_` prefix); PL/SQL exists-check for tables |
+| Packages | Spec in `packages/spec/*.pks`; body in `packages/body/*.pkb` |
 
 ---
 
@@ -173,6 +195,8 @@ Document status lookup codes and index numbering in the same file so seeds and D
 | FK constraint | `fk_myapp_order_items_myapp_orders` |
 | Index | `idx_myapp_orders_customer_id` |
 | Sequence (if used) | `seq_myapp_orders` |
+| Package spec | `myapp_orders_pkg.pks` in `packages/spec/` |
+| Package body | `myapp_orders_pkg.pkb` in `packages/body/` |
 
 ---
 

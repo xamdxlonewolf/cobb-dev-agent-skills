@@ -160,10 +160,14 @@ For tables with audit columns, include `created_by` / `created` on insert and up
 
 ## Repository Layout
 
+For the full application folder tree (including `install/`, `packages/spec/`, `packages/body/`, and `apex/`), see `project-directory-setup.md` and copy from `templates/project-database/`.
+
+Minimal example:
+
 ```text
 database/
-  install.sql
-  oracle-schema-prefix.md      ← project prefix config (from template)
+  install/
+    install.sql
   tables/
     customers.sql
     orders.sql
@@ -172,12 +176,12 @@ database/
   views/
     vw_open_orders.sql
   seeds/
-    order_statuses.sql
+    seed_order_statuses.sql
   grants/
     app_user.sql
 ```
 
-Adjust paths to match the project; keep lowercase file names.
+`oracle-schema-prefix.md` lives at the **repo root**. Adjust paths to match the project; keep lowercase file names.
 
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: oracle-dev-db
-description: Project-specific Oracle Database schema and SQL development standards for 19c-first estates. Use when creating or altering tables, views, indexes, constraints, sequences, seed data scripts, or idempotent DDL in application schemas. Covers naming conventions, natural keys, audit columns, lookup-table patterns, hand-run migration scripts, and project prefix discovery. Does not replace the generic db/ domain for administration, performance tuning, PL/SQL package design, ORDS, or agent-safe operations — route those to db/ when needed.
+description: Project-specific Oracle Database schema and SQL development standards for 19c-first estates. Use when creating or altering tables, views, indexes, constraints, sequences, seed data scripts, idempotent DDL, or scaffolding a new application database/ folder structure. Covers naming conventions, natural keys, audit columns, lookup-table patterns, hand-run migration scripts, project prefix discovery, and project directory setup. Does not replace the generic db/ domain for administration, performance tuning, PL/SQL package design, ORDS, or agent-safe operations — route those to db/ when needed.
 ---
 
 # Oracle Dev Schema Skills
@@ -18,7 +18,8 @@ npx skills add oracle/skills/db
 1. **Read the project prefix file first** — see `design/project-prefix.md`.
 2. Apply `design/schema-standards.md` for every new or changed object.
 3. Use `devops/idempotent-ddl-scripts.md` for install scripts, seed data, and object deployment.
-4. Fall back to the external **`db/`** skill from `oracle/skills` for topics not covered here.
+4. Use `devops/project-directory-setup.md` when scaffolding a new application `database/` tree.
+5. Fall back to the external **`db/`** skill from `oracle/skills` for topics not covered here.
 
 ## Directory Structure
 
@@ -28,9 +29,11 @@ oracle-dev-db/
 │   ├── project-prefix.md
 │   └── schema-standards.md
 ├── devops/
-│   └── idempotent-ddl-scripts.md
+│   ├── idempotent-ddl-scripts.md
+│   └── project-directory-setup.md
 └── templates/
-    └── oracle-schema-prefix.md
+    ├── oracle-schema-prefix.md
+    └── project-database/          ← copy into application repos
 ```
 
 ## Category Routing
@@ -40,18 +43,22 @@ oracle-dev-db/
 | Application prefix discovery and project-local config | `design/project-prefix.md` |
 | Tables, columns, keys, constraints, indexes, views, data types, audit columns | `design/schema-standards.md` |
 | Hand-run scripts, MERGE seeds, CREATE OR REPLACE, table-exists PL/SQL blocks | `devops/idempotent-ddl-scripts.md` |
+| Scaffold application `database/`, `apex/`, and install scripts | `devops/project-directory-setup.md` |
 | Blank prefix template to copy into a project repo | `templates/oracle-schema-prefix.md` |
+| Starter folder tree and install script skeletons | `templates/project-database/` |
 
 ## Key Starting Points
 
 - `design/project-prefix.md`
 - `design/schema-standards.md`
 - `devops/idempotent-ddl-scripts.md`
+- `devops/project-directory-setup.md`
 
 ## Common Multi-Step Flows
 
 | Task | Recommended Sequence |
 |------|----------------------|
+| Set up a new application database folder | `project-directory-setup.md` → `templates/project-database/` |
 | Add a new application table | `project-prefix.md` → `schema-standards.md` → `idempotent-ddl-scripts.md` |
 | Add seed / reference data | `schema-standards.md` (lookup FK pattern) → `idempotent-ddl-scripts.md` (MERGE) |
 | Add a view over app tables | `project-prefix.md` → `schema-standards.md` → `idempotent-ddl-scripts.md` |

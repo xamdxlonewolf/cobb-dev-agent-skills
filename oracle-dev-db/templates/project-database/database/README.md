@@ -1,0 +1,1 @@
+Oracle schema scripts for this application. Run `@database/install/install.sql` from SQL*Plus or SQLcl (dev: `@database/install/install-dev.sql`). See `install/rollback.sql` to drop objects in reverse order.

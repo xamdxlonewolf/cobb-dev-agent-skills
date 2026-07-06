@@ -1,0 +1,24 @@
+-- rollback.sql — drop application objects in reverse install order
+-- Run from SQL*Plus or SQLcl: @database/install/rollback.sql
+-- Review and uncomment blocks as objects are added. Drop package body before spec.
+WHENEVER SQLERROR EXIT FAILURE ROLLBACK
+
+-- Reverse order: synonyms → grants → triggers → functions → procedures
+--   → packages/body → packages/spec → types → mviews → views
+--   → constraints → indexes → sequences → tables
+--
+-- Example (uncomment and adjust as objects are added):
+-- DROP SYNONYM acme_orders_syn;
+-- REVOKE … ;
+-- DROP TRIGGER acme_orders_biu;
+-- DROP FUNCTION acme_calc_total;
+-- DROP PROCEDURE acme_refresh_cache;
+-- DROP PACKAGE BODY acme_orders_pkg;
+-- DROP PACKAGE acme_orders_pkg;
+-- DROP TYPE acme_address_typ;
+-- DROP MATERIALIZED VIEW acme_order_summary_mv;
+-- DROP VIEW vw_acme_open_orders;
+-- ALTER TABLE acme_orders DROP CONSTRAINT fk_acme_orders_acme_customers;
+-- DROP INDEX idx_acme_orders_customer_id;
+-- DROP SEQUENCE seq_acme_orders;
+-- DROP TABLE acme_orders CASCADE CONSTRAINTS PURGE;
