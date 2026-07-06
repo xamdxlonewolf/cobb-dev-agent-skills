@@ -1,5 +1,5 @@
 ---
-name: oracle-dev
+name: oracle-dev-db
 description: Project-specific Oracle Database schema and SQL development standards for 19c-first estates. Use when creating or altering tables, views, indexes, constraints, sequences, seed data scripts, or idempotent DDL in application schemas. Covers naming conventions, natural keys, audit columns, lookup-table patterns, hand-run migration scripts, and project prefix discovery. Does not replace the generic db/ domain for administration, performance tuning, PL/SQL package design, ORDS, or agent-safe operations — route those to db/ when needed.
 ---
 
